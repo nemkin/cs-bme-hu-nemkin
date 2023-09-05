@@ -1,63 +1,231 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="./index_files/styles.css">
-<title>Nemkin Viktória honlapja</title>
-</head>
+<html lang="hu">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="./index_files/styles.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
 
-<body>
+      :root {
+        font-family: "Montserrat", sans-serif;
+        font-size: 14pt;
+        line-height: 1.5em;
+        word-wrap: break-word;
+        hyphens: auto;
+        background-color: #ffffde;
+      }
 
-<h1>Valszám és statisztika</h1>
+      body {
+        max-width: 42em;
+        margin: 0 auto;
+        padding: 0.7em;
+      }
 
-<h2>Órák</h2>
+      h1 {
+        color: #900090;
+        font-size: 20pt;
+      }
+      h2 {
+        color: #000088;
+        font-size: 16pt;
+      }
+      h3,
+      h4,
+      h5 {
+        color: #000088;
+        font-size: 14pt;
+      }
 
-<p>
-Előadások:
-<ul>
-  <li>Hétfő 8:15 IB028 (IB027)</li>
-  <li>Csütörtök 12:15 QI</li>
-</ul>
-Gyakorlatok:
-<ul>
-  <li>17-es kurzus: Szerda 12:15 (IB139) </li>
-  <li>22-es kurzus: Szerda 14:15 (IB139) </li>
-</ul>
-</p>
+      h5 {
+        color: black;
+        font-size: 14pt;
+        margin: 12px 0px 12px 0px;
+      }
 
-<h2>Linkek</h2>
+      input,
+      textarea {
+        background-color: white;
+        border-style: thin groove;
+      }
 
-<ul>
-  <li>Tárgyhonlap: <a href="https://cs.bme.hu/valszam/">https://cs.bme.hu/valszam/</a></li>
-  <li>Moodle: <a href="https://edu.vik.bme.hu/course/view.php?id=11235">https://edu.vik.bme.hu/course/view.php?id=11235</a></li>
-  <li>TAD: <a href="https://portal.vik.bme.hu/kepzes/targyak/VISZAB04/">https://portal.vik.bme.hu/kepzes/targyak/VISZAB04/</a></li>
-</ul>
+      pre,
+      tt,
+      code {
+        font-family: "Courier New", Courier, monospace;
+      }
 
-<h2>Jegyzetek</h2>
+      a {
+        text-decoration: none;
+      }
 
-<ul>
-  <li>Valszám: <a href="http://cs.bme.hu/~marti/valszam2021/VIK_Valszam_2021_Eloadas.pdf">Mészáros Szabolcs előadásjegyzet</a></li>
-  <li>Statisztika: <a href="http://cs.bme.hu/~marti/valszam2021/VIK_Valszam_2021_Eloadas.pdf">Tóbiás András kiegészítése</a></li>
-  <li>Régebbről: <a href="https://drive.google.com/open?id=0B9n0-nrqhilsVkdfa25ONEJqMjg">Órai jegyzetem (2014 ősz)</a></li>
-</ul>
+      /* Style for tabs */
+      .tab {
+        display: none;
+      }
 
-<h2>Előadás</h2>
+      /* Style for active tab */
+      .active {
+        display: block;
+      }
 
-<h4>1. előadás (09. 04. hétfő)</h4>
+      /* Style for tab navigation */
+      .tab-navigation {
+        display: flex;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background: #fadfa4;
+        align-items: left;
+        text-align: left;
+      }
 
+      .tab-navigation li {
+        display: block;
+        color: 000088;
+        padding: 8px 10px;
+        text-decoration: none;
+        cursor: pointer;
+      }
 
-<ul>
-  <li><a href="https://edu.vik.bme.hu/mod/resource/view.php?id=113541">Diasor</a></li>
-</ul>
+      .tab-navigation li:hover {
+        background-color: #fff0cc;
+      }
 
-<h2>Gyakorlat</h2>
-<ul>
-  <li><a href="https://edu.vik.bme.hu/mod/resource/view.php?id=113361">1. gyakorlat</a></li>
-</ul>
+      @media screen and (max-width: 800px) {
+        .tab-navigation {
+          flex-direction: column;
+        }
+      }
+    </style>
+    <script>
+      // JavaScript to handle tab switching
+      function showTab(tabId) {
+        // Hide all tabs
+        var tabs = document.getElementsByClassName("tab");
+        for (var i = 0; i < tabs.length; i++) {
+          tabs[i].style.display = "none";
+        }
 
+        // Show the selected tab
+        var tab = document.getElementById(tabId);
+        if (tab) {
+          tab.style.display = "block";
+        }
+      }
+    </script>
+    <title>Nemkin Viktória honlapja</title>
+  </head>
 
-<h2>KisZH</h2>
-<h2>NagyZH</h2>
-<h2>Vizsga</h2>
+  <body>
+    <h1>Valszám és statisztika</h1>
 
+    <!-- Tab navigation -->
+    <ul class="tab-navigation">
+      <li onclick="showTab('orak')">Órák</li>
+      <li onclick="showTab('linkek')">Linkek</li>
+      <li onclick="showTab('jegyzetek')">Jegyzetek</li>
+      <li onclick="showTab('eloadas')">Előadás</li>
+      <li onclick="showTab('gyakorlat')">Gyakorlat</li>
+      <li onclick="showTab('kiszh')">KisZH</li>
+      <li onclick="showTab('nagyzh')">NagyZH</li>
+      <li onclick="showTab('vizsga')">Vizsga</li>
+    </ul>
 
-</body>
+    <!-- Tab content -->
+    <div id="orak" class="tab active">
+      <h2>Órák</h2>
+      <p>
+        Előadások:
+        <ul>
+          <li>Hétfő 8:15 IB028 (IB027)</li>
+          <li>Csütörtök 12:15 QI</li>
+        </ul>
+        Gyakorlatok:
+        <ul>
+          <li>17-es kurzus: Szerda 12:15 (IB139) </li>
+          <li>22-es kurzus: Szerda 14:15 (IB139) </li>
+        </ul>
+        </p>
+    </div>
+
+    <div id="linkek" class="tab">
+      <h2>Linkek</h2>
+      <ul>
+        <li>Tárgyhonlap: <a href="https://cs.bme.hu/valszam/">https://cs.bme.hu/valszam/</a></li>
+        <li>Moodle: <a href="https://edu.vik.bme.hu/course/view.php?id=11235">https://edu.vik.bme.hu/course/view.php?id=11235</a></li>
+        <li>TAD: <a href="https://portal.vik.bme.hu/kepzes/targyak/VISZAB04/">https://portal.vik.bme.hu/kepzes/targyak/VISZAB04/</a></li>
+      </ul>
+    </div>
+
+    <div id="jegyzetek" class="tab">
+      <h2>Jegyzetek</h2>
+      <ul>
+        <li>Valszám: <a href="http://cs.bme.hu/~marti/valszam2021/VIK_Valszam_2021_Eloadas.pdf">Mészáros Szabolcs előadásjegyzete</a></li>
+        <li>Statisztika: <a href="http://cs.bme.hu/~marti/valszam2021/VIK_Valszam_2021_Eloadas.pdf">Tóbiás András kiegészítése</a></li>
+        <li>Régebbről: <a href="https://drive.google.com/open?id=0B9n0-nrqhilsVkdfa25ONEJqMjg">Órai jegyzetem (2014 ősz)</a></li>
+      </ul>
+    </div>
+
+    <div id="eloadas" class="tab">
+      <h2>Előadás</h2>
+      <h3>1. előadás (szept. 04. hétfő, 1. hét)</h3>
+      <ul>
+        <li><a href="https://edu.vik.bme.hu/mod/resource/view.php?id=113541">Diasor</a></li>
+      </ul>
+    </div>
+
+    <div id="gyakorlat" class="tab">
+      <h2>Gyakorlat</h2>
+      <h3>1. gyakorlat (szept. 06. szerda, 1. hét)</h3>
+      <ul>
+        <li><a href="https://edu.vik.bme.hu/mod/resource/view.php?id=113361">Feladatsor</a></li>
+      </ul>
+    </div>
+
+    <div id="kiszh" class="tab">
+      <h2>KisZH</h2>
+      
+      Időpontok:
+      <ul>
+        <li>1. KisZH:  <strong style="color: red">szept. 20. (3. hét)</strong></li>
+        <li>2. KisZH: <strong style="color: red">okt. 04. (5. hét)</strong></li>
+        <li>3. KisZH: <strong style="color: red">nov. 15. (11. hét)</strong></li>
+      </ul>
+
+      Infók:
+      <ul>
+        <li>3 db</li>
+        <li>15 perces</li>
+        <li>20 pontos</li>
+        <li>2 legjobból szumma 20 pont kell (érdemes az 1.-t jól megírni)</li>
+        <li>pótlás nincs</li>
+        <li><a href="https://cs.bme.hu/~tobias/mintakiszh.pdf">Minta KisZH</a></li>
+        <li>Egyszerű, feleletválasztós/igaz-hamis/táblázatból kiolvasós/definíció-kimondós feladatok lesznek, indokolni nem kell.</li>
+        <li>Teremkapacitások miatt mindenki a Neptun szerinti gyakorlaton írja (ha tényleg szükséges máshol, akkor talán IMSC-n van pár hely).</li>
+        <li>Megtekintés a következő heti gyakon.</li>
+      </ul>
+    </div>
+
+    <div id="nagyzh" class="tab">
+      <h2>NagyZH</h2>
+
+      Időpontok:
+      <ul>
+        <li>ZH: <strong style="color: red">okt. 24. kedd (8. hét)</strong></li>
+        <li>PótZH: <strong style="color: red">nov. 07. kedd (10. hét)</strong></li>
+        <li>PótPótZH: dec. ?? (póthéten) </li>
+      </ul>
+
+      <ul>
+        <li>Tavalyi ZH-nál bővebb, tavalyi vizsgánál szűkebb.</li>
+        <li>Javítás 1 hét alatt.</li>
+        <li>Megtekintés a következő héten, egyeztetett időpontban (mert nov. 1. miatt gyak nem lesz).</li>
+      </ul>
+    </div>
+
+    <div id="vizsga" class="tab">
+      <h2>Vizsga</h2>
+      Lesz statisztika is.
+    </div>
+  </body>
 </html>
