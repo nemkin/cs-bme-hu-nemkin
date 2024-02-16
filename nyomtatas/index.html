@@ -1,0 +1,36 @@
+# Fájlok elérése és nyomtatás otthonról / saját gépről
+
+## Fájlok elérése otthonról Windows-os gépről
+
+Erről a weboldalról kell telepíteni:
+
+https://winfsp.dev/rel/
+
+Magát a WinFSP-t, továbbá az SSHFS-Win (x64) nevű kiegészítőt.
+
+Ezek után nyissuk meg a File Explorer-t, jobb klikk a This PC-n és kattintsunk a "Map network drive..." gombra:
+
+![01_map_network_drive.png]
+
+Drive: Válasszunk egy szimpatikus betűt!
+Folder: \\sshfs\<tanszéki felhasználónév>@pnp.cs.bme.hu
+Reconnect at sign-in: igen (Így Windows bejelentkezéskor automatikusan felcsatolja majd nekünk a mappát.)
+Connect using different credentials: igen (A tanszéki account felhasználónevét és jelszavát akarjuk majd megadni.)
+
+És már látjuk is!
+
+## Elérés mobilról
+
+
+## Nyomtatás
+
+lp -d minolta -n 10 nev_eloszlasok.pdf
+lp -d minolta -o sides=two-sided-long-edge -n 24 valszam7.pdf
+lp -d minolta -o sides=two-sided-short-edge -n 12 dupla6.pdf
+
+
+## SSH
+
+Putty: https://www.putty.org/
+
+putty-64bit-0.79-installer.msi
