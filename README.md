@@ -1,1 +1,1 @@
-# cs-web
+# cs-bme-hu-nemkin
