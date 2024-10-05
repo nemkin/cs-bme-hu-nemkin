@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BME VIK - Weekly Navigator</title>
+  <link rel="icon" href="https://vik.bme.hu/static/weekly_archives/2024/VIK_Weekly_36_het_elemei/image002.jpg"
+    type="image/jpeg">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Fixed top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #062A4C;
+      color: white;
+      padding: 0 20px;
+      z-index: 10000;
+    }
+
+    /* Top bar left content */
+    .top-bar-left {
+      font-size: 1.5em;
+    }
+
+    /* Space between left and right */
+    .top-bar-space {
+      flex-grow: 1;
+    }
+
+    /* Hamburger menu and Current Week on the right */
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hamburger-menu {
+      padding: 10px 0px 10px 10px;
+      background-color: #062A4C;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    .current-week {
+      padding: 10px 15px;
+      background-color: #062A4C;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      border-right: 1px solid #ffffff50;
+    }
+
+    /* Sidebar Styles */
+    .content {
+      display: flex;
+      padding-top: 60px;
+      /* Offset for the fixed top bar */
+    }
+
+    .sidebar {
+      width: 400px;
+      background-color: #f9f9f9;
+      padding: 0px 20px 20px 20px;
+      border-left: 2px solid #ccc;
+      overflow-y: auto;
+      /* Extra padding at the bottom */
+      display: none;
+      /* Hide sidebar by default */
+    }
+
+    /* Grid for week buttons */
+    .weeks-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-gap: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .week-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 10px;
+      text-align: center;
+      border-radius: 5px;
+      color: #000;
+      background-color: #f9f9f9;
+      text-decoration: none;
+      font-size: 0.9em;
+      border: 1px black solid;
+      margin: 0;
+    }
+
+    /* Add hover effect */
+    .week-button:hover {
+      color: #fff;
+      background-color: #0A3D6F;
+    }
+
+    /* Main content area with the iframe */
+    .iframe-container {
+      flex-grow: 1;
+      /* Increased horizontal padding */
+      height: calc(100vh - 60px);
+      /* Adjust height for top bar */
+      overflow: hidden;
+      box-sizing: border-box;
+      /* Ensure padding is included in the width calculation */
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Arrow Styles */
+    .arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2em;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 9999;
+      color: rgb(6, 42, 76);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .left-arrow {
+      left: 10px;
+    }
+
+    .right-arrow {
+      right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top bar with BME VIK, Current Week, and Hamburger Menu -->
+  <div class="top-bar">
+    <div class="top-bar-left" id="topBarLeft">BME VIK</div>
+    <div class="top-bar-space"></div>
+    <div class="top-bar-right">
+      <a href="javascript:void(0)" class="current-week" id="currentWeekButton">Aktuális</a>
+      <div class="hamburger-menu" id="hamburgerMenuButton">&#9776;</div>
+    </div>
+  </div>
+
+  <!-- Main content: iframe and sidebar -->
+  <div class="content">
+    <!-- Iframe to load VIK Weekly pages -->
+    <div class="iframe-container" id="iframeContainer">
+      <iframe id="weeklyIframe"></iframe>
+    </div>
+
+    <!-- Sidebar with week navigation -->
+    <div class="sidebar" id="sidebar">
+      <!-- Yearly and Weekly buttons will be inserted here dynamically -->
+    </div>
+  </div>
+
+  <!-- Left and right arrows for navigation -->
+  <div class="arrow left-arrow" id="leftArrow">&lt;</div>
+  <div class="arrow right-arrow" id="rightArrow">&gt;</div>
+
+  <script>
+    // Declare currentYear and currentWeekNumber globally
+    let currentYear = new Date().getFullYear();
+    let currentWeekNumber = getCurrentWeek();
+
+    // Function to get the current week number (ISO week)
+    function getCurrentWeek() {
+      const today = new Date();
+      const firstJan = new Date(today.getFullYear(), 0, 1);
+      const dayOfYear = ((today - firstJan + 86400000) / 86400000) | 0;
+      return Math.ceil(dayOfYear / 7);
+    }
+
+    // Function to get URL parameters
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        year: params.get('year'),
+        week: params.get('week')
+      };
+    }
+
+    // Function to set URL parameters
+    function setUrlParams(year, week) {
+      const url = new URL(window.location);
+      url.searchParams.set('year', year);
+      url.searchParams.set('week', week);
+      window.history.pushState({}, '', url);
+    }
+
+    // Function to load a specific week into the iframe and update the title and top bar
+    function loadWeek(year, week) {
+      const iframe = document.getElementById('weeklyIframe');
+      iframe.src = `https://vik.bme.hu/static/weekly_archives/${year}/VIK_Weekly_${week}_het.htm`;
+      updateTopBar(year, week);
+      document.title = `BME VIK-Weekly ${year}/${week}. hét`;
+      setUrlParams(year, week);
+      currentYear = parseInt(year);
+      currentWeekNumber = parseInt(week);
+      updateArrowState();
+    }
+
+    // Function to update the top bar with the current year and week
+    function updateTopBar(year, week) {
+      const topBarLeft = document.getElementById('topBarLeft');
+      topBarLeft.innerText = `BME VIK-Weekly ${year}/${week}. hét`;
+    }
+
+    // Function to dynamically adjust the right arrow position
+    function adjustArrowPositions() {
+      const iframeContainer = document.getElementById('iframeContainer');
+      const leftArrow = document.getElementById('leftArrow');
+      const rightArrow = document.getElementById('rightArrow');
+      const sidebar = document.getElementById('sidebar');
+
+      const iframeRect = iframeContainer.getBoundingClientRect();
+      const arrowVerticalPosition = iframeRect.top + (iframeRect.height / 2);
+
+      // Position left arrow
+      leftArrow.style.left = `${iframeRect.left + 10}px`;
+      leftArrow.style.top = `${arrowVerticalPosition}px`;
+
+      // Position right arrow
+      if (window.getComputedStyle(sidebar).display === 'none') {
+        rightArrow.style.right = `${window.innerWidth - iframeRect.right + 10}px`;
+      } else {
+        rightArrow.style.right = `${sidebar.offsetWidth + 10}px`;
+      }
+      rightArrow.style.top = `${arrowVerticalPosition}px`;
+    }
+
+    // Function to disable/enable arrows based on current week
+    function updateArrowState() {
+      const leftArrow = document.getElementById('leftArrow');
+      const rightArrow = document.getElementById('rightArrow');
+
+      // Always enable left arrow
+      leftArrow.style.opacity = '1';
+      leftArrow.style.cursor = 'pointer';
+      leftArrow.onclick = () => navigateWeek('previous');
+
+      // Check if current week is displayed
+      if (currentYear === new Date().getFullYear() && currentWeekNumber === getCurrentWeek()) {
+        // Disable right arrow
+        rightArrow.style.opacity = '0.5';
+        rightArrow.style.cursor = 'auto';
+        rightArrow.onclick = null;
+      } else {
+        // Enable right arrow
+        rightArrow.style.opacity = '1';
+        rightArrow.style.cursor = 'pointer';
+        rightArrow.onclick = () => navigateWeek('next');
+      }
+    }
+
+    // Arrow navigation functionality
+    function navigateWeek(direction) {
+      let newYear = currentYear;
+      let newWeek = currentWeekNumber;
+
+      if (direction === 'previous') {
+        if (newWeek === 1) {
+          newYear--;
+          newWeek = 52;
+        } else {
+          newWeek--;
+        }
+      } else if (direction === 'next') {
+        if (newWeek === getCurrentWeek() && newYear === new Date().getFullYear()) {
+          return; // Do not navigate past the current week of the current year
+        }
+        if (newWeek === 52) {
+          newYear++;
+          newWeek = 1;
+        } else {
+          newWeek++;
+        }
+      }
+
+      loadWeek(newYear, newWeek);
+      adjustArrowPositions();
+      updateArrowState();
+    }
+
+    // Integrate arrow position adjustment into the existing window.onload
+    window.onload = function () {
+      const params = getUrlParams();
+      if (params.year && params.week) {
+        currentYear = parseInt(params.year);
+        currentWeekNumber = parseInt(params.week);
+      } else {
+        currentYear = new Date().getFullYear();
+        currentWeekNumber = getCurrentWeek();
+      }
+      loadWeek(currentYear, currentWeekNumber);
+      adjustArrowPositions();
+      updateArrowState();
+    };
+
+    // Call this function on load, resize, and when toggling the sidebar
+    window.addEventListener('load', adjustArrowPositions);
+    window.addEventListener('resize', adjustArrowPositions);
+
+    // We cannot access the iframe's content directly due to CORS. Instead, we will rely on the iframe's src attribute to know what is loaded.
+    const iframe = document.getElementById('weeklyIframe');
+    iframe.onload = function () {
+      // Extract the year and week from the iframe's src
+      const src = iframe.src;
+      const yearWeek = extractYearAndWeek(src);
+      if (yearWeek) {
+        updateTopBar(yearWeek.year, yearWeek.week);
+        document.title = `BME VIK-Weekly ${yearWeek.year}/${yearWeek.week}. hét`;  // Update title based on iframe src
+      }
+    };
+
+    // Function to extract year and week from the iframe src
+    function extractYearAndWeek(url) {
+      const regex = /\/(\d{4})\/VIK_Weekly_(\d+)_het\.htm/;
+      const match = url.match(regex);
+      if (match) {
+        return {
+          year: match[1],
+          week: match[2]
+        };
+      }
+      return null;
+    }
+
+    // Load the current week into the iframe when clicking the "Current Week" button
+    // Modify the "Current Week" button event listener
+    document.getElementById('currentWeekButton').addEventListener('click', () => {
+      currentYear = new Date().getFullYear();
+      currentWeekNumber = getCurrentWeek();
+      loadWeek(currentYear, currentWeekNumber);
+      updateArrowState();
+    });
+
+    // Function to create week buttons for each year
+    function createWeekButtons(year, maxWeek) {
+      const grid = document.createElement('div');
+      grid.classList.add('weeks-grid');
+
+      for (let week = 1; week <= maxWeek; week++) {
+        const button = document.createElement('a');
+        button.classList.add('week-button');
+        button.innerText = week;
+        button.href = `?year=${year}&week=${week}`;
+
+        // Add click event listener to load the week in the iframe
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadWeek(year, week);
+        });
+
+        grid.appendChild(button);
+      }
+
+      return grid;
+    }
+
+    // Initialize years and weeks in the sidebar
+    const sidebar = document.getElementById('sidebar');
+    const years = [2024, 2023, 2022, 2021, 2020];
+    const maxWeek = currentWeekNumber;
+
+    years.forEach((year) => {
+      const yearHeader = document.createElement('h3');
+      yearHeader.innerText = `${year}`;
+      sidebar.appendChild(yearHeader);
+
+      const maxWeek = (year === currentYear) ? currentWeekNumber : 52;
+      const weekGrid = createWeekButtons(year, maxWeek);  // Generate buttons without checking existence
+      sidebar.appendChild(weekGrid);
+    });
+
+    // Handle the hamburger menu (toggle sidebar)
+    const hamburgerButton = document.getElementById('hamburgerMenuButton');
+    const sidebarElement = document.getElementById('sidebar');
+    let sidebarOpen = false;
+
+    // Initialize sidebar state based on its current display property
+    sidebarOpen = (window.getComputedStyle(sidebarElement).display !== 'none');
+
+    // Update the hamburger button click event
+    hamburgerButton.addEventListener('click', function () {
+      sidebarOpen = !sidebarOpen;
+      sidebarElement.style.display = sidebarOpen ? 'block' : 'none';
+      adjustArrowPositions();
+    });
+
+  </script>
+</body>
+
+</html>
