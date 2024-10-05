@@ -72,6 +72,8 @@
       display: flex;
       padding-top: 60px;
       /* Offset for the fixed top bar */
+      height: calc(100vh - 60px);
+      /* Ensure the content area takes full height */
     }
 
     .sidebar {
@@ -80,10 +82,11 @@
       padding: 0px 20px 20px 20px;
       border-left: 2px solid #ccc;
       overflow-y: auto;
-      /* Extra padding at the bottom */
-      display: none;
-      /* Hide sidebar by default */
+      /* Enable scrolling */
+      height: calc(100vh - 80px);
+      /* Make sidebar take full height of the content area */
     }
+
 
     /* Grid for week buttons */
     .weeks-grid {
@@ -117,21 +120,20 @@
     /* Main content area with the iframe */
     .iframe-container {
       flex-grow: 1;
-      /* Increased horizontal padding */
-      height: calc(100vh - 60px);
-      /* Adjust height for top bar */
+      height: 100%;
       overflow: hidden;
-      box-sizing: border-box;
-      /* Ensure padding is included in the width calculation */
+      /* Prevent iframe from scrolling */
     }
 
     .iframe-container iframe {
       width: 100%;
       height: 100%;
       border: none;
+      overflow-y: hidden;
+      /* Prevent iframe from scrolling */
     }
 
-    /* Arrow Styles */
+    /* Add your arrow styles */
     .arrow {
       position: fixed;
       top: 50%;
@@ -151,6 +153,7 @@
 
     .right-arrow {
       right: 10px;
+      /* Position it accordingly */
     }
   </style>
 </head>
